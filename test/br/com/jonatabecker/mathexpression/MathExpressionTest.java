@@ -4,7 +4,8 @@ import static junit.framework.Assert.*;
 import org.junit.Test;
 
 /**
- *
+ * Units tests
+ * 
  * @author Jonata Becker
  */
 public class MathExpressionTest {

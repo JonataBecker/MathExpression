@@ -11,11 +11,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- *
+ * Class responsible for calculating mathematical expression
+ * 
  * @author Jonata Becker
  */
 public class MathExpression {
 
+    /** List of pryority */
     private final List<Map<String, Operation>> priority;
 
     public MathExpression() {
@@ -33,20 +35,11 @@ public class MathExpression {
     }
 
     /**
-     * @param args the command line arguments
+     * Execute calculation of mathematical expressions
+     * 
+     * @param expression
+     * @return double 
      */
-    public static void main(String[] args) {
-
-        // 5 + 5 * 9 + 5 * 9
-        // 5 + (5 + 6)
-        String exp = "10 + 5 * 5 + 5 * 5 + 10 / 5";
-
-        MathExpression mathExpression = new MathExpression();
-
-        System.out.println(mathExpression.calc(exp));
-
-    }
-
     public double calc(String expression) {
         String[] expArr = expression.split(" ");
         if (expArr.length == 1) {
@@ -60,6 +53,12 @@ public class MathExpression {
         return calc(expression.replace(v, String.valueOf(result)));
     }
 
+    /**
+     * Search next token in the caracter list expression
+     * 
+     * @param expArr
+     * @return TokenOperator
+     */
     public TokenOperator nextToken(String[] expArr) {
         for (Map<String, Operation> map : priority) {
             for (int i = 0; i < expArr.length; i++) {
