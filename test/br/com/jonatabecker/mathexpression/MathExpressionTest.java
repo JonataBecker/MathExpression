@@ -5,13 +5,13 @@ import org.junit.Test;
 
 /**
  * Units tests
- * 
+ *
  * @author Jonata Becker
  */
 public class MathExpressionTest {
-    
+
     @Test
-    public void sum() {
+    public void sum() throws InvalidExpressionException {
         MathExpression mathExpression = new MathExpression();
         assertEquals(10.0, mathExpression.calc("5 + 5"));
         assertEquals(15.0, mathExpression.calc("5 + 5 + 5"));
@@ -19,7 +19,7 @@ public class MathExpressionTest {
     }
 
     @Test
-    public void subtraction() {
+    public void subtraction() throws InvalidExpressionException {
         MathExpression mathExpression = new MathExpression();
         assertEquals(0.0, mathExpression.calc("5 - 5"));
         assertEquals(-5.0, mathExpression.calc("5 - 5 - 5"));
@@ -27,7 +27,7 @@ public class MathExpressionTest {
     }
 
     @Test
-    public void multiplication() {
+    public void multiplication() throws InvalidExpressionException {
         MathExpression mathExpression = new MathExpression();
         assertEquals(25.0, mathExpression.calc("5 * 5"));
         assertEquals(125.0, mathExpression.calc("5 * 5 * 5"));
@@ -35,16 +35,22 @@ public class MathExpressionTest {
     }
 
     @Test
-    public void division() {
+    public void division() throws InvalidExpressionException {
         MathExpression mathExpression = new MathExpression();
         assertEquals(1.0, mathExpression.calc("5 / 5"));
         assertEquals(5.0, mathExpression.calc("10 / 2"));
     }
 
     @Test
-    public void expression() {
+    public void expression() throws InvalidExpressionException {
         MathExpression mathExpression = new MathExpression();
         assertEquals(-25.0, mathExpression.calc("10 / 5 + 5 * 4 - 47"));
-    }    
-    
+    }
+
+    @Test(expected = InvalidExpressionException.class)
+    public void expressionInalid() throws InvalidExpressionException {
+        MathExpression mathExpression = new MathExpression();
+        assertEquals(-25.0, mathExpression.calc("10 / 5 + 5 * 4 -"));
+    }
+
 }
