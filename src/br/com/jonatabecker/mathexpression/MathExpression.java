@@ -1,14 +1,18 @@
 package br.com.jonatabecker.mathexpression;
 
+import br.com.jonatabecker.mathexpression.function.Function;
+import br.com.jonatabecker.mathexpression.function.SqrtFunction;
 import br.com.jonatabecker.mathexpression.operation.DivisonOperation;
 import br.com.jonatabecker.mathexpression.operation.MultiplicationOperation;
 import br.com.jonatabecker.mathexpression.operation.SumOperation;
 import br.com.jonatabecker.mathexpression.operation.SubtractionOperation;
 import br.com.jonatabecker.mathexpression.operation.Operation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -20,11 +24,16 @@ public class MathExpression {
 
     /** List of pryority */
     private final List<Map<String, Operation>> priority;
+    /** List of functions */
+    private final Map<Pattern, Function> functions;
     /** Patter to validade expression */
-    private static final Pattern EXP = Pattern.compile("^([0-9])+( [+-/\\*]( [0-9]+))+$");
+    private static final Pattern EXP = Pattern.compile("^(sqrt\\([0-9]+\\)|(sqrt\\([0-9]+\\)|([0-9])+)+( [+-/\\\\*]( (sqrt\\([0-9]+\\)|([0-9]+))))+)$");
     
     public MathExpression() {
         this.priority = new ArrayList<>();
+        // Define functions
+        this.functions = new HashMap<>();
+        this.functions.put(Pattern.compile("sqrt\\([0-9]+\\)"), new SqrtFunction());
         // Define second priority
         Map<String, Operation> secondPriority = new TreeMap<>();
         secondPriority.put("*", new MultiplicationOperation());
@@ -48,7 +57,7 @@ public class MathExpression {
         if (!isValid(expression)) {
             throw new InvalidExpressionException(expression);
         }
-        return calcRecursive(expression);
+        return calcRecursive(calcFunction(expression));
     }
 
     /**
@@ -68,6 +77,26 @@ public class MathExpression {
         String v = expArr[token.getPos() - 1] + " " + expArr[token.getPos()] + " " + expArr[token.getPos() + 1];
         double result = token.getOperation().calc(val1, val2);
         return calcRecursive(expression.replace(v, String.valueOf(result)));        
+    }
+    
+    /**
+     * Execute calculation of mathematical functions
+     * 
+     * @param expression
+     * @return String
+     */
+    private String calcFunction(String expression) {
+        for (Map.Entry<Pattern, Function> entry : functions.entrySet()) {
+            Matcher matcher = entry.getKey().matcher(expression);
+            // If find one function
+            if (matcher.find()) {
+                String group = matcher.group();
+                double number = Double.valueOf(group.substring(group.indexOf('(') + 1, group.indexOf(')')));
+                double value = entry.getValue().calc(number);
+                return calcFunction(expression.replace(group, String.valueOf(value)));
+            }           
+        }
+        return expression;
     }
     
     /**

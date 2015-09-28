@@ -53,4 +53,12 @@ public class MathExpressionTest {
         assertEquals(-25.0, mathExpression.calc("10 / 5 + 5 * 4 -"));
     }
 
+    @Test
+    public void sqrt() throws InvalidExpressionException {
+        MathExpression mathExpression = new MathExpression();   
+        assertEquals(12.0, mathExpression.calc("sqrt(64) + 4"));
+        assertEquals(16.0, mathExpression.calc("sqrt(64) + sqrt(64)"));
+        assertEquals(8.0, mathExpression.calc("sqrt(64)"));
+    }    
+    
 }
